@@ -5,9 +5,8 @@ import { logger } from '@/utils/logger';
 import { FiUpload, FiPlay, FiAlertCircle } from 'react-icons/fi';
 
 export default function VoiceCloning() {
-  const [text, setText] = useState(
-    "مرحباً بكم في تطبيق استنساخ الصوت. يمكنك استخدام هذا التطبيق لإنشاء نسخة من صوتك باللغة العربية."
-  );
+  const [text, setText] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +57,12 @@ export default function VoiceCloning() {
     }
   };
 
+  const languages = [
+    { code: "en", name: "English", dir: "ltr" },
+    { code: "hi", name: "Hindi", dir: "ltr" },
+    { code: "ar", name: "Arabic", dir: "rtl" }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-indigo-950">
       <div className="max-w-4xl mx-auto p-8">
@@ -71,6 +76,26 @@ export default function VoiceCloning() {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 space-y-6">
+          {/* Language Selection */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+              Select Language
+            </label>
+            <select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              className="w-full p-2 border border-gray-200 dark:border-gray-700 rounded-xl 
+                       bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 
+                       text-gray-800 dark:text-gray-200 transition-all duration-200"
+            >
+              {languages.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Text Input Section */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -82,7 +107,7 @@ export default function VoiceCloning() {
               className="w-full h-32 p-4 border border-gray-200 dark:border-gray-700 rounded-xl 
                        bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 
                        text-gray-800 dark:text-gray-200 transition-all duration-200"
-              dir="rtl"
+              dir={languages.find(lang => lang.code === selectedLanguage)?.dir || "ltr"}
               placeholder="Enter your text here..."
             />
           </div>
